@@ -1,7 +1,7 @@
 ﻿#Accept input paramenters 
 param(
 [string]$UserName, 
-[string]$Password, 
+[SecureString]$Password, 
 [switch]$MFA,
 [int]$Action
 ) 
@@ -67,13 +67,12 @@ $DWServer = "MAGVDW01"
 $User = "mag\administrator"
 $Pwd = Read-Host -AsSecureString "Bitte geben Sie das Adminkennwort ein, um sich mit allen benötigten Servern zu verbinden"
 $SecCred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, $pwd
-$orgName="mertensextern"
-cls
+Clear-Host
 #region Connections
 
 #region DCCon
 #Verbindung mit Domaincontroller
-if (!(Get-PSSession | Where { $_.ConfigurationName -eq "Microsoft.PowerShell" })) 
+if (!(Get-PSSession | Where-Object { $_.ConfigurationName -eq "Microsoft.PowerShell" })) 
 { 
     Write-Host "      Verbinden zum Domaincontroller:" -NoNewline
     $DCSession = New-PSSession -ComputerName $DCServer -Credential $SecCred
@@ -96,7 +95,7 @@ else
 
 #region EXCon
 #Verbindung mit Exchange
-if (!(Get-PSSession | Where { $_.ConfigurationName -eq "Microsoft.Exchange" }))
+if (!(Get-PSSession | Where-Object { $_.ConfigurationName -eq "Microsoft.Exchange" }))
 {
     Write-Host "      Verbinden zum Exchangeserver:" -NoNewline
     $EXSession = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri http://$ExchangeServer/PowerShell/ -Credential $SecCred -Authentication Kerberos 
@@ -119,7 +118,7 @@ else
 
 #region FSCon
 #Verbindung mit FileServer für Benutzerdaten
-if (!(Get-CimSession | Where { $_.ComputerName -eq $FileServer }))
+if (!(Get-CimSession | Where-Object { $_.ComputerName -eq $FileServer }))
 {
     Write-Host "      Verbinden zum Fileserver:" -NoNewline
     $FSSession = New-CimSession -ComputerName $FileServer -Credential $SecCred
@@ -144,7 +143,7 @@ else
 
 #region DWServerCon
 #Verbindung mit DocuwareServer für Importjobs
-if (!(Get-CimSession | Where { $_.ComputerName -eq $DWServer }))
+if (!(Get-CimSession | Where-Object { $_.ComputerName -eq $DWServer }))
 {
     Write-Host "      Verbinden zum DW Server:" -NoNewline
     $DWSession = New-CimSession -ComputerName $DWServer -Credential $SecCred
@@ -234,15 +233,12 @@ $ExecutingUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
 $Date = get-date -format "dd-MM-yyyy-HH_mm"
 $SQLServer = "MAGVSQ03"
 $SQLDBName = "MAG_Mitarbeiter"
-$SQLSecurity = "Integrated Security = false"
+#$SQLSecurity = "Integrated Security = false"
 $SQLSelect = "SELECT * FROM dbo.MAG_Stammdaten WHERE INT_TODO = 1"
 $SQLUsername = "MAG-RO"
 $SQLPassword = "N49@nM_1Du"
-$SQLTODO = "INT_Todo = 1"
-$SQLMobile = ""
 $SQLAngelegtVon = $ExecutingUser
 $SQLAngelegtProg = "Powershell Script $Version"
-$SQLAngelegtDurch = $ExecutingUser
 
 $RetentionPolicy = "Default MRM Policy" #Exchange Aufbewahrungsrichtlinie
 $EXDB1 = "merTensAG01"
@@ -280,8 +276,6 @@ $Template_Willich = @("Vorlage.AM", "Vorlage.KAM", "Vorlage.CWPD", "Vorlage.Mont
 $Template_Berlin = @("Vorlage.Berlin")
 $Template_WB = @("Vorlage.WB")
 $Template_AreaOffice = @("Vorlage.AreaOffice")
-
-$Blank = ""
 
 $Username = @()
 $UniqueUserName = @()
