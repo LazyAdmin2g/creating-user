@@ -1,0 +1,81 @@
+﻿@page "/people"
+
+@using DataLibrary
+@using WebAppLazyAdmin.Models
+@using Microsoft.Extensions.Configuration
+@using System.Collections.ObjectModel
+
+@inject IDataAccess_MAG_Mitarbeiter _data
+@inject IConfiguration _config 
+
+<h3>People</h3>
+
+<button class="btn btn-primary" @onclick="InsertData">Insert</button>
+<button class="btn btn-warning" @onclick="UpdateData">Update</button>
+<button class="btn btn-danger" @onclick="DeleteData">Delete</button>
+<br />
+<button class="btn btn-danger" @onclick="AddUser">Add User</button>
+
+
+@if(people == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @foreach (var p in people)
+    {
+        <p>
+            @p.UID @p.Vorname @p.Nachname @p.Eintrittsdatum
+        </p>
+    }
+}
+
+
+@code {   
+
+    List<PeopleModel> people;
+
+    //Powershell Script starten
+    private void AddUser()
+    {
+        ProcessStartInfo si = new ProcessStartInfo();
+    }
+
+    //InsertData
+    private async Task InsertData()
+    {
+        string sql = "INSERT INTO MAG_Stammdaten (Vorname, Nachname) values (@Vorname, @Nachname);";
+
+        await _data.SaveData(sql, new { Vorname = "Max", Nachname = "Mustermann" }, _config.GetConnectionString("default"));
+    }
+
+    //UpdateData
+    private async Task UpdateData()
+    {
+        string sql = "UPDATE MAG_Stammdaten SET Vorname = '' WHERE Nachname = ''";
+
+        await _data.SaveData(sql, new { }, _config.GetConnectionString("default"));
+
+        await OnInitializedAsync();
+    }
+
+    //DeleteData
+    private async Task DeleteData()
+    {
+        string sql = "DELETE FROM MAG_Stammdaten WHERE Nachname = ''";
+
+        await _data.SaveData(sql, new {Nachname = ""}, _config.GetConnectionString("default"));
+
+        await OnInitializedAsync();
+    }
+
+    //Select Anzeige
+    protected override async Task OnInitializedAsync()
+    {
+        string sql = "SELECT * FROM MAG_Stammdaten";
+
+        people = await _data.LoadData<PeopleModel, dynamic>(sql, new { }, _config.GetConnectionString("default"));
+    }
+
+}

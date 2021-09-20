@@ -640,8 +640,7 @@ foreach($Item in $Table)
         $SQLUsername_mt_rm = "admin"
         $SQLPassword_mt_rm = "RUEcXfU6eN"
         $SQLDBName_rm = "mt_rm" #Testserver = mt_rm_live_20200422
-        $SQLDBName_mt = "mt_project" #Testserver = mt_project_live_20200210 
-        $UID_RM =                     
+        $SQLDBName_mt = "mt_project" #Testserver = mt_project_live_20200210                      
         
         $SQLInsert_rm = "INSERT INTO mr_user(user_name, ldap_user, user_pw, user_role, email, vorname, nachname, freigegeben) 
                          VALUES('$($newUserID.sAMAccountName)', 
