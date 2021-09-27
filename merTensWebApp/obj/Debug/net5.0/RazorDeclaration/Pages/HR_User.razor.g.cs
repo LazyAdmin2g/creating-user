@@ -152,21 +152,28 @@ using System.Text;
 #line hidden
 #nullable disable
 #nullable restore
-#line 21 "H:\Dev\Projekte\creating-user\merTensWebApp\_Imports.razor"
-using merTensWebApp.Models;
+#line 3 "H:\Dev\Projekte\creating-user\merTensWebApp\Pages\HR_User.razor"
+using DataLibrary;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "H:\Dev\Projekte\creating-user\merTensWebApp\Pages\FetchData.razor"
-using merTensWebApp.Data;
+#line 4 "H:\Dev\Projekte\creating-user\merTensWebApp\Pages\HR_User.razor"
+using DataLibrary.Models;
 
 #line default
 #line hidden
 #nullable disable
-    [Microsoft.AspNetCore.Components.RouteAttribute("/fetchdata")]
-    public partial class FetchData : Microsoft.AspNetCore.Components.ComponentBase
+#nullable restore
+#line 5 "H:\Dev\Projekte\creating-user\merTensWebApp\Pages\HR_User.razor"
+using merTensWebApp.Models;
+
+#line default
+#line hidden
+#nullable disable
+    [Microsoft.AspNetCore.Components.RouteAttribute("/HR/User1")]
+    public partial class HR_User : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998
         protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
@@ -174,19 +181,41 @@ using merTensWebApp.Data;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 39 "H:\Dev\Projekte\creating-user\merTensWebApp\Pages\FetchData.razor"
+#line 67 "H:\Dev\Projekte\creating-user\merTensWebApp\Pages\HR_User.razor"
        
-    private WeatherForecast[] forecasts;
+
+    private List<UserModel> user;
+    private DisplayUserModel newUser = new DisplayUserModel();
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        user = await _db.GetUsers();
+    }
+
+    private async Task CreateUser()
+    {
+        UserModel u = new UserModel
+        {
+            Vorname = newUser.Vorname,
+            Nachname = newUser.Nachname,
+            Username = newUser.Vorname.Substring(0, 1).ToLower() + "." + newUser.Nachname.ToLower(),
+            Email = newUser.Vorname.Substring(0, 1).ToLower() + "." + newUser.Nachname.ToLower() + "@mertens.ag",
+            Stellenbeschreibung = newUser.Stellenbeschreibung,
+            Eintrittsdatum = newUser.Eintrittsdatum,
+            INT_TODO = newUser.INT_TODO,
+            Notebook = newUser.Notebook
+        };
+        await _db.NewUser(u);
+
+        user.Add(u);
+
+        newUser = new DisplayUserModel();
     }
 
 #line default
 #line hidden
 #nullable disable
-        [global::Microsoft.AspNetCore.Components.InjectAttribute] private WeatherForecastService ForecastService { get; set; }
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private IUserData _db { get; set; }
     }
 }
 #pragma warning restore 1591

@@ -15,6 +15,7 @@ using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 
+
 namespace merTensWebApp
 {
     public class Startup
@@ -33,8 +34,9 @@ namespace merTensWebApp
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
-            services.AddSingleton<IDataAccess, DataAccess>();
-            services.AddScoped<HR_UserService>();
+            services.AddTransient<ISqlDataAccess, SqlDataAccess>();
+            services.AddTransient<IUserData, UserData>();
+           
 
             services.AddBlazorise(options =>
             {
@@ -43,6 +45,8 @@ namespace merTensWebApp
 
                 .AddBootstrapProviders()
                 .AddFontAwesomeIcons();
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

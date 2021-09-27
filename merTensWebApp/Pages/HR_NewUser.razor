@@ -1,0 +1,225 @@
+﻿@page "/HR/User"
+
+@using DataLibrary
+@using DataLibrary.Models
+@using merTensWebApp.Models
+@using System.Collections.ObjectModel
+@using Blazorise.Components
+
+
+@inject IUserData _db
+
+<Button Color="Color.Primary" Clicked="@(()=>ShowModal( ModalSize.Default, null, true ))">
+    Neuer Mitarbeiter
+</Button>
+<Modal @ref="modalRef">
+    <ModalContent Size="@modalSize" Centered="@centered">
+        <ModalHeader>
+            <ModalTitle>
+                <Icon Name="IconName.UserPlus" />
+                Neuer Mitarbeiter
+            </ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody MaxHeight="@maxHeight">
+
+            <Field>
+                <FieldLabel>Vorname</FieldLabel>
+                <TextEdit @bind-Text="newUser.Vorname" Autofocus="true" Placeholder="Vorname..." />
+            </Field>
+
+            <Field>
+                <FieldLabel>Nachname</FieldLabel>
+                <TextEdit @bind-Text="newUser.Nachname" Placeholder="Nachname..." />
+            </Field>
+
+            <Field>
+                <FieldLabel>Eintrittsdatum</FieldLabel>
+                <DateEdit TValue="DateTime?" @bind-Date="newUser.Eintrittsdatum" Placeholder="Eintrittsdatum wählen"></DateEdit>
+            </Field>
+
+            <Field>
+                <FieldLabel>Stellenbeschreibung</FieldLabel>
+                <Select SelectedValue="newUser.Stellenbeschreibung">
+                    <SelectItem Value="newUser.Stellenbeschreibung" Disabled="true">Bitte wähle eine Stelle aus...</SelectItem>
+                    <SelectItem Value="newUser.Stellenbeschreibung">KAM</SelectItem>
+                    <SelectItem Value="newUser.Stellenbeschreibung">AM</SelectItem>
+                    <SelectItem Value="newUser.Stellenbeschreibung">LAGER</SelectItem>
+                </Select>
+            </Field>
+
+            <Field>
+                <FieldLabel>Stellenbeschreibung1</FieldLabel>
+                <SelectList TItem="Stellenbeschreibung"
+                            TValue="int"
+                            Data="@stellen"
+                            TextField="@(( item) => item.MyTextField)"
+                            ValueField="@((item) => item.MyValueField)"
+                            SelectedValue="@selectedDropValue"
+                            SelectedValueChanged="@MyListValueChangedHandler"
+                            DefaultItemText="Bitte Position auswählen...">
+                </SelectList>
+            </Field>
+
+            <Field>
+                <Switch TValue="bool" @bind-Checked="nbChecked">Notebook</Switch>
+                <Switch TValue="bool" @bind-Checked="handyChecked">Handy</Switch>
+                <Switch TValue="bool" @bind-Checked="tabletChecked">Tablet</Switch>
+                <Switch TValue="bool" @bind-Checked="monChecked">Monitor</Switch>
+                <Switch TValue="bool" @bind-Checked="printerChecked">Drucker</Switch>
+                <Switch TValue="bool" @bind-Checked="homeChecked">Homeoffice</Switch>
+            </Field>
+
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@HideModal">Abbrechen</Button>
+            <Button Color="Color.Primary" Clicked="@CreateUser">Übermitteln</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+<!--TABELLE-->
+<h4>Current History</h4>
+@if (user == null)
+{
+    <p><em>Loading....</em></p>
+}
+else
+{
+    <Table Hoverable="true">
+        <TableHeader ThemeContrast="ThemeContrast.Dark">
+            <TableRow>
+                <TableHeaderCell>Vorname</TableHeaderCell>
+                <TableHeaderCell>Nachname</TableHeaderCell>
+                <TableHeaderCell>Stellenbeschreibung</TableHeaderCell>
+                <TableHeaderCell>Eintrittsdatum</TableHeaderCell>
+                <TableHeaderCell>AngelegtAm</TableHeaderCell>
+                <TableHeaderCell>AngelegtVon</TableHeaderCell>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            @foreach (var u in user)
+            {
+                <TableRow @key="@u.Vorname">
+                    <TableRowHeader>@u.Vorname</TableRowHeader>
+                    <TableRowCell>@u.Nachname</TableRowCell>
+                    <TableRowCell>@u.Stellenbeschreibung</TableRowCell>
+                    <TableRowCell>@u.Eintrittsdatum</TableRowCell>
+                    <TableRowCell>@u.AngelegtAm</TableRowCell>
+                    <TableRowCell>@u.AngelegtVon</TableRowCell>
+                </TableRow>
+            }
+        </TableBody>
+    </Table>
+}
+
+
+@code {
+    //Liste für Stellenbeschreibung
+    static string[] merTensStellen = { "KAM", "AM", "LAGER"};
+    IEnumerable<Stellenbeschreibung> stellen = Enumerable.Range(1, merTensStellen.Length).Select(x => new Stellenbeschreibung { MyTextField = merTensStellen[x - 1], MyValueField = x });
+    int selectedListValue { get; set; }
+    int selectedDropValue { get; set; } = 2;
+
+    void MyListValueChangedHandler(int newValue)
+    {
+        selectedListValue = newValue;
+    }
+
+
+
+    //Liste für User
+    private List<UserModel> user;
+    private DisplayUserModel newUser = new DisplayUserModel();
+
+
+    //Switch Vars
+    private bool nbChecked;
+    private bool handyChecked;
+    private bool tabletChecked;
+    private bool monChecked;
+    private bool printerChecked;
+    private bool homeChecked;
+
+    //Modal Vars
+    private Modal modalRef;
+    private bool centered = false;
+    private ModalSize modalSize = ModalSize.Default;
+    private int? maxHeight = null;
+
+    private void switchCheck()
+    {
+        if (nbChecked == true) { newUser.Notebook = "1"; }
+        else { newUser.Notebook = "0"; }
+
+        if (handyChecked == true) { newUser.Handy = "1"; }
+        else { newUser.Handy = "0"; }
+
+        if (tabletChecked == true) { newUser.Tablet = "1"; }
+        else { newUser.Tablet = "0"; }
+
+        if (monChecked == true) { newUser.Monitor = "1"; }
+        else { newUser.Monitor = "0"; }
+
+        if (printerChecked == true) { newUser.Drucker = "1"; }
+        else { newUser.Drucker = "0"; }
+
+        if (homeChecked == true) { newUser.Homeoffice = "1"; }
+        else { newUser.Homeoffice = "0"; }
+    }
+
+
+    private void ShowModal(ModalSize modalSize, int? maxHeight = null, bool centered = false, bool nbChecked = false, bool handyChecked = false, bool tabletChecked = false, bool monChecked = false, bool printerChecked = false, bool homeChecked = false)
+    {
+        this.centered = centered;
+        this.modalSize = modalSize;
+        this.maxHeight = maxHeight;
+        this.nbChecked = false;
+        this.handyChecked = false;
+        this.tabletChecked = false;
+        this.monChecked = false;
+        this.printerChecked = false;
+        this.homeChecked = false;
+        //this.strStellenbeschreibung = "";
+
+        modalRef.Show();
+    }
+
+    private void HideModal()
+    {
+        modalRef.Hide();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await _db.GetUsers();
+    }
+
+    private async Task CreateUser()
+    {
+        switchCheck();
+        UserModel u = new UserModel
+        {
+
+            Vorname = newUser.Vorname,
+            Nachname = newUser.Nachname,
+            Username = newUser.Vorname.Substring(0, 1).ToLower() + "." + newUser.Nachname.ToLower(),
+            Email = newUser.Vorname.Substring(0, 1).ToLower() + "." + newUser.Nachname.ToLower() + "@mertens.ag",
+            Stellenbeschreibung = newUser.Stellenbeschreibung,
+            Eintrittsdatum = newUser.Eintrittsdatum,
+            INT_TODO = newUser.INT_TODO,
+            Notebook = newUser.Notebook,
+            Handy = newUser.Handy,
+            Tablet = newUser.Tablet,
+            Monitor = newUser.Monitor,
+            Drucker = newUser.Drucker,
+            Homeoffice = newUser.Homeoffice
+        };
+        await _db.NewUser(u);
+
+        user.Add(u);
+
+        newUser = new DisplayUserModel();
+        HideModal();
+    }
+}

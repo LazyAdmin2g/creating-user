@@ -1,0 +1,96 @@
+﻿@page "/HR/User1"
+
+@using DataLibrary
+@using DataLibrary.Models
+@using merTensWebApp.Models
+
+
+@inject IUserData _db
+
+<h1>User Page</h1>
+<h4>Neuer Mitarbeiter</h4>
+<EditForm Model="@newUser" OnValidSubmit="@CreateUser">
+    <DataAnnotationsValidator />
+    <Blazorise.ValidationSummary />
+
+    <InputText id="Vorname" DisplayName="Vorname" @bind-Value="newUser.Vorname" />
+    <InputText id="Nachname" @bind-Value="newUser.Nachname" />
+    <InputDate id="Eintrittsdatum" @bind-Value="newUser.Eintrittsdatum"></InputDate>
+
+    <!--Stellenbeschreibung ergänzen-->
+    <InputSelect id="Stellenbeschreibung" @bind-Value="newUser.Stellenbeschreibung">
+        <option value="@newUser.Stellenbeschreibung">KAM</option>
+        <option value="@newUser.Stellenbeschreibung">AM</option>
+    </InputSelect>
+
+    <Check TValue="string"></Check>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+<!--TABELLE-->
+<h4>Current History</h4>
+@if (user == null)
+{
+    <p><em>Loading....</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Vorname</th>
+                <th>Nachname</th>
+                <th>Username</th>
+                <th>EMail</th>
+                <th>Stellenbeschreibung</th>
+                <th>Eintrittsdatum</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var u in user)
+            {
+                <tr>
+                    <td>@u.Vorname</td>
+                    <td>@u.Nachname</td>
+                    <td>@u.Username</td>
+                    <td>@u.Email</td>
+                    <td>@u.Stellenbeschreibung</td>
+                    <td>@u.Eintrittsdatum</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+
+    private List<UserModel> user;
+    private DisplayUserModel newUser = new DisplayUserModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await _db.GetUsers();
+    }
+
+    private async Task CreateUser()
+    {
+        UserModel u = new UserModel
+        {
+            Vorname = newUser.Vorname,
+            Nachname = newUser.Nachname,
+            Username = newUser.Vorname.Substring(0, 1).ToLower() + "." + newUser.Nachname.ToLower(),
+            Email = newUser.Vorname.Substring(0, 1).ToLower() + "." + newUser.Nachname.ToLower() + "@mertens.ag",
+            Stellenbeschreibung = newUser.Stellenbeschreibung,
+            Eintrittsdatum = newUser.Eintrittsdatum,
+            INT_TODO = newUser.INT_TODO,
+            Notebook = newUser.Notebook
+        };
+        await _db.NewUser(u);
+
+        user.Add(u);
+
+        newUser = new DisplayUserModel();
+    }
+}

@@ -53,6 +53,14 @@
               "target": "Package",
               "version": "[0.9.4.4, )"
             },
+            "Blazorise.Components": {
+              "target": "Package",
+              "version": "[0.9.4.4, )"
+            },
+            "Blazorise.DataGrid": {
+              "target": "Package",
+              "version": "[0.9.4.4, )"
+            },
             "Blazorise.Icons.FontAwesome": {
               "target": "Package",
               "version": "[0.9.4.4, )"
@@ -61,13 +69,17 @@
               "target": "Package",
               "version": "[2.0.90, )"
             },
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[3.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
             "Microsoft.PowerShell.SDK": {
               "target": "Package",
               "version": "[7.1.4, )"
-            },
-            "System.Data.SqlClient": {
-              "target": "Package",
-              "version": "[4.8.3, )"
             },
             "System.DirectoryServices": {
               "target": "Package",
