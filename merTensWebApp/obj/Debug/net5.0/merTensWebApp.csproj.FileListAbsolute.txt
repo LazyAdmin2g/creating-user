@@ -439,3 +439,14 @@ H:\Dev\Projekte\creating-user\merTensWebApp\obj\Debug\net5.0\RazorDeclaration\Pa
 H:\Dev\Projekte\creating-user\merTensWebApp\obj\Debug\net5.0\Razor\Pages\HR_NewUser.razor.g.cs
 H:\Dev\Projekte\creating-user\merTensWebApp\bin\Debug\net5.0\Blazorise.Components.dll
 H:\Dev\Projekte\creating-user\merTensWebApp\bin\Debug\net5.0\Blazorise.Snackbar.dll
+H:\Dev\Projekte\creating-user\merTensWebApp\bin\Debug\net5.0\Microsoft.AspNetCore.Authorization.dll
+H:\Dev\Projekte\creating-user\merTensWebApp\bin\Debug\net5.0\Microsoft.AspNetCore.Components.dll
+H:\Dev\Projekte\creating-user\merTensWebApp\bin\Debug\net5.0\Microsoft.AspNetCore.Components.Authorization.dll
+H:\Dev\Projekte\creating-user\merTensWebApp\bin\Debug\net5.0\Microsoft.AspNetCore.Metadata.dll
+H:\Dev\Projekte\creating-user\merTensWebApp\bin\Debug\net5.0\Microsoft.DotNet.PlatformAbstractions.dll
+H:\Dev\Projekte\creating-user\merTensWebApp\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.dll
+H:\Dev\Projekte\creating-user\merTensWebApp\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+H:\Dev\Projekte\creating-user\merTensWebApp\bin\Debug\net5.0\Microsoft.Extensions.DependencyInjection.dll
+H:\Dev\Projekte\creating-user\merTensWebApp\bin\Debug\net5.0\Microsoft.Extensions.DependencyModel.dll
+H:\Dev\Projekte\creating-user\merTensWebApp\bin\Debug\net5.0\Microsoft.IdentityModel.Clients.ActiveDirectory.dll
+H:\Dev\Projekte\creating-user\merTensWebApp\bin\Debug\net5.0\System.Diagnostics.DiagnosticSource.dll

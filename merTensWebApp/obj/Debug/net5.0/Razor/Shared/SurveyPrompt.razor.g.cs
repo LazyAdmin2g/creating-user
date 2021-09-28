@@ -155,6 +155,13 @@ using merTensWebApp.Models;
 #line default
 #line hidden
 #nullable disable
+#nullable restore
+#line 22 "H:\Dev\Projekte\creating-user\merTensWebApp\_Imports.razor"
+using System.DirectoryServices.AccountManagement;
+
+#line default
+#line hidden
+#nullable disable
     public partial class SurveyPrompt : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998

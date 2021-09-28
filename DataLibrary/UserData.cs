@@ -25,8 +25,8 @@ namespace DataLibrary
 
         public Task NewUser(UserModel user)
         {
-            string sql = @"INSERT INTO dbo.User_HRAnlage_IMP (Vorname, Nachname, Username, Stellenbeschreibung, Email, Eintrittsdatum, INT_Todo, Notebook, Handy, Tablet, Monitor, Drucker, Homeoffice)
-                           VALUES (@Vorname, @Nachname, @Username, @Stellenbeschreibung, @Email, @Eintrittsdatum, 1, @Notebook, @Handy, @Tablet, @Monitor, @Drucker, @Homeoffice)";
+            string sql = @"INSERT INTO dbo.User_HRAnlage_IMP (Vorname, Nachname, Username, Stellenbeschreibung, Email, Eintrittsdatum, INT_Todo, Notebook, Handy, Tablet, Monitor, Drucker, Homeoffice, Standort, Bemerkung)
+                           VALUES (@Vorname, @Nachname, @Username, @Stellenbeschreibung, @Email, @Eintrittsdatum, 1, @Notebook, @Handy, @Tablet, @Monitor, @Drucker, @Homeoffice, @Standort, @Bemerkung)";
 
             return _db.SaveData(sql, user);
         }

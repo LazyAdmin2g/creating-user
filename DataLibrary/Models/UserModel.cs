@@ -19,6 +19,10 @@ namespace DataLibrary.Models
 
         public DateTime? Eintrittsdatum { get; set; }
 
+        public string Standort { get; set; }
+
+        public string Bemerkung { get; set; }
+
         public string INT_TODO { get; set; }
         public string Notebook { get; set; }
         public string Handy { get; set; }

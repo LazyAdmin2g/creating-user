@@ -149,6 +149,13 @@ using System.Text;
 #line hidden
 #nullable disable
 #nullable restore
+#line 22 "H:\Dev\Projekte\creating-user\merTensWebApp\_Imports.razor"
+using System.DirectoryServices.AccountManagement;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
 #line 3 "H:\Dev\Projekte\creating-user\merTensWebApp\Pages\HR_User.razor"
 using DataLibrary;
 

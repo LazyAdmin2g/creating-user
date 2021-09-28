@@ -19,13 +19,6 @@ using System.Net.Http;
 #line hidden
 #nullable disable
 #nullable restore
-#line 2 "H:\Dev\Projekte\creating-user\merTensWebApp\_Imports.razor"
-using Microsoft.AspNetCore.Authorization;
-
-#line default
-#line hidden
-#nullable disable
-#nullable restore
 #line 3 "H:\Dev\Projekte\creating-user\merTensWebApp\_Imports.razor"
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -152,36 +145,57 @@ using System.Text;
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "H:\Dev\Projekte\creating-user\merTensWebApp\Pages\HR_NewUser.razor"
-using DataLibrary;
+#line 22 "H:\Dev\Projekte\creating-user\merTensWebApp\_Imports.razor"
+using System.DirectoryServices.AccountManagement;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
 #line 4 "H:\Dev\Projekte\creating-user\merTensWebApp\Pages\HR_NewUser.razor"
-using DataLibrary.Models;
+using DataLibrary;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
 #line 5 "H:\Dev\Projekte\creating-user\merTensWebApp\Pages\HR_NewUser.razor"
-using merTensWebApp.Models;
+using DataLibrary.Models;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
 #line 6 "H:\Dev\Projekte\creating-user\merTensWebApp\Pages\HR_NewUser.razor"
-using System.Collections.ObjectModel;
+using merTensWebApp.Models;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
 #line 7 "H:\Dev\Projekte\creating-user\merTensWebApp\Pages\HR_NewUser.razor"
+using System.Collections.ObjectModel;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 8 "H:\Dev\Projekte\creating-user\merTensWebApp\Pages\HR_NewUser.razor"
 using Blazorise.Components;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 9 "H:\Dev\Projekte\creating-user\merTensWebApp\Pages\HR_NewUser.razor"
+using Microsoft.AspNetCore.Authorization;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 1 "H:\Dev\Projekte\creating-user\merTensWebApp\Pages\HR_NewUser.razor"
+           [Authorize(Roles = "HR")]
 
 #line default
 #line hidden
@@ -195,115 +209,185 @@ using Blazorise.Components;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 117 "H:\Dev\Projekte\creating-user\merTensWebApp\Pages\HR_NewUser.razor"
-       
-    //Liste für Stellenbeschreibung
-    static string[] merTensStellen = { "KAM", "AM", "LAGER"};
-    IEnumerable<Stellenbeschreibung> stellen = Enumerable.Range(1, merTensStellen.Length).Select(x => new Stellenbeschreibung { MyTextField = merTensStellen[x - 1], MyValueField = x });
-    int selectedListValue { get; set; }
-    int selectedDropValue { get; set; } = 2;
-
-    void MyListValueChangedHandler(int newValue)
-    {
-        selectedListValue = newValue;
-    }
+#line 157 "H:\Dev\Projekte\creating-user\merTensWebApp\Pages\HR_NewUser.razor"
+           
+        [CascadingParameter] Task<AuthenticationState> authenticationStateTask { get; set; }
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
 
 
-
-    //Liste für User
-    private List<UserModel> user;
-    private DisplayUserModel newUser = new DisplayUserModel();
-
-
-    //Switch Vars
-    private bool nbChecked;
-    private bool handyChecked;
-    private bool tabletChecked;
-    private bool monChecked;
-    private bool printerChecked;
-    private bool homeChecked;
-
-    //Modal Vars
-    private Modal modalRef;
-    private bool centered = false;
-    private ModalSize modalSize = ModalSize.Default;
-    private int? maxHeight = null;
-
-    private void switchCheck()
-    {
-        if (nbChecked == true) { newUser.Notebook = "1"; }
-        else { newUser.Notebook = "0"; }
-
-        if (handyChecked == true) { newUser.Handy = "1"; }
-        else { newUser.Handy = "0"; }
-
-        if (tabletChecked == true) { newUser.Tablet = "1"; }
-        else { newUser.Tablet = "0"; }
-
-        if (monChecked == true) { newUser.Monitor = "1"; }
-        else { newUser.Monitor = "0"; }
-
-        if (printerChecked == true) { newUser.Drucker = "1"; }
-        else { newUser.Drucker = "0"; }
-
-        if (homeChecked == true) { newUser.Homeoffice = "1"; }
-        else { newUser.Homeoffice = "0"; }
-    }
+        string LoggedInUser = Environment.UserName;
+        string selectedStelleValue { get; set; } = "Bitte Position auswählen...";
+        string selectedStandortValue { get; set; } = "Bitte Standort auswählen...";
 
 
-    private void ShowModal(ModalSize modalSize, int? maxHeight = null, bool centered = false, bool nbChecked = false, bool handyChecked = false, bool tabletChecked = false, bool monChecked = false, bool printerChecked = false, bool homeChecked = false)
-    {
-        this.centered = centered;
-        this.modalSize = modalSize;
-        this.maxHeight = maxHeight;
-        this.nbChecked = false;
-        this.handyChecked = false;
-        this.tabletChecked = false;
-        this.monChecked = false;
-        this.printerChecked = false;
-        this.homeChecked = false;
-        //this.strStellenbeschreibung = "";
+        //Liste für Stellenbeschreibung
+        static string[] strStellenbeschreibung = { "KAM", "IT", "LAGER", "AZUBI" };
+        IEnumerable<Stellenbeschreibung> dataStellenbeschreibung = Enumerable.Range(1, strStellenbeschreibung.Length).Select(x => new Stellenbeschreibung { MyTextField = strStellenbeschreibung[x - 1], MyValueField = x });
 
-        modalRef.Show();
-    }
-
-    private void HideModal()
-    {
-        modalRef.Hide();
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        user = await _db.GetUsers();
-    }
-
-    private async Task CreateUser()
-    {
-        switchCheck();
-        UserModel u = new UserModel
+        private void StellenbeschreibungToString()
         {
+            switch (selectedStelleValue)
+            {
+                case "1":
+                    newUser.Stellenbeschreibung = "KAM";
+                    break;
+                case "2":
+                    newUser.Stellenbeschreibung = "IT";
+                    break;
+            }
+        }
 
-            Vorname = newUser.Vorname,
-            Nachname = newUser.Nachname,
-            Username = newUser.Vorname.Substring(0, 1).ToLower() + "." + newUser.Nachname.ToLower(),
-            Email = newUser.Vorname.Substring(0, 1).ToLower() + "." + newUser.Nachname.ToLower() + "@mertens.ag",
-            Stellenbeschreibung = newUser.Stellenbeschreibung,
-            Eintrittsdatum = newUser.Eintrittsdatum,
-            INT_TODO = newUser.INT_TODO,
-            Notebook = newUser.Notebook,
-            Handy = newUser.Handy,
-            Tablet = newUser.Tablet,
-            Monitor = newUser.Monitor,
-            Drucker = newUser.Drucker,
-            Homeoffice = newUser.Homeoffice
-        };
-        await _db.NewUser(u);
+        void StellenChangedHandler(string newValue)
+        {
+            selectedStelleValue = newValue;
+            StateHasChanged();
+        }
 
-        user.Add(u);
+        //Liste für Standorte
+        static string[] strStandorte = { "Willich", "Berlin", "Wiesbaden" };
+        IEnumerable<Standorte> dataStandorte = Enumerable.Range(1, strStandorte.Length).Select(y => new Standorte { StandorteTextField = strStandorte[y - 1], StandorteValueField = y });
 
-        newUser = new DisplayUserModel();
-        HideModal();
-    }
+        private void StandortToString()
+        {
+            switch (selectedStandortValue)
+            {
+                case "1":
+                    newUser.Standort = "Willich";
+                    break;
+                case "2":
+                    newUser.Standort = "Berlin";
+                    break;
+            }
+        }
+
+        void StandortChangedHandler(string newValue)
+        {
+            selectedStandortValue = newValue;
+            StateHasChanged();
+        }
+
+
+        //Liste für User
+        private List<UserModel> user;
+        private DisplayUserModel newUser = new DisplayUserModel();
+
+        //Switch Vars
+        #region SwitchVariablen - NB, Handy, etc
+        private bool nbChecked;
+        private bool handyChecked;
+        private bool tabletChecked;
+        private bool monChecked;
+        private bool printerChecked;
+        private bool homeChecked;
+        #endregion
+
+        //Modal Vars
+        #region Modal Variablen
+        private Modal modalRef;
+        private bool centered = false;
+        private ModalSize modalSize = ModalSize.Default;
+        private int? maxHeight = null;
+        #endregion
+
+        private void switchCheck()
+        {
+            if (nbChecked == true) { newUser.Notebook = "1"; }
+            else { newUser.Notebook = "0"; }
+
+            if (handyChecked == true) { newUser.Handy = "1"; }
+            else { newUser.Handy = "0"; }
+
+            if (tabletChecked == true) { newUser.Tablet = "1"; }
+            else { newUser.Tablet = "0"; }
+
+            if (monChecked == true) { newUser.Monitor = "1"; }
+            else { newUser.Monitor = "0"; }
+
+            if (printerChecked == true) { newUser.Drucker = "1"; }
+            else { newUser.Drucker = "0"; }
+
+            if (homeChecked == true) { newUser.Homeoffice = "1"; }
+            else { newUser.Homeoffice = "0"; }
+        }
+
+        private void ShowModal(ModalSize modalSize, int? maxHeight = null, bool centered = false, bool nbChecked = false, bool handyChecked = false, bool tabletChecked = false, bool monChecked = false, bool printerChecked = false, bool homeChecked = false, string selectedStelleValue = "Bitte Position auswählen...")
+        {
+            this.centered = centered;
+            this.modalSize = modalSize;
+            this.maxHeight = maxHeight;
+            this.nbChecked = false;
+            this.handyChecked = false;
+            this.tabletChecked = false;
+            this.monChecked = false;
+            this.printerChecked = false;
+            this.homeChecked = false;
+            this.selectedStelleValue = "Bitte Position auswählen...";
+            this.selectedStandortValue = "Bitte Standort auswählen...";
+
+            modalRef.Show();
+        }
+
+        private void HideModal()
+        {
+            this.nbChecked = false;
+            this.handyChecked = false;
+            this.tabletChecked = false;
+            this.monChecked = false;
+            this.printerChecked = false;
+            this.homeChecked = false;
+            this.selectedStelleValue = "Bitte Position auswählen...";
+            this.selectedStandortValue = "Bitte Standort auswählen...";
+            modalRef.Hide();
+            OnInitializedAsync();
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            var authenticationState = await authenticationStateTask;
+            if (!authenticationState.User.Identity.IsAuthenticated)
+            {
+                NavigationManager.NavigateTo($"/");
+            }
+
+
+            user = await _db.GetUsers();
+        }
+
+        private async Task CreateUser()
+        {
+            await OnInitializedAsync();
+            StandortToString();
+            StellenbeschreibungToString();
+            switchCheck();
+            UserModel u = new UserModel
+            {
+                ID = newUser.ID,
+                Vorname = newUser.Vorname,
+                Nachname = newUser.Nachname,
+                Username = newUser.Vorname.Substring(0, 1).ToLower() + "." + newUser.Nachname.ToLower(),
+                Email = newUser.Vorname.Substring(0, 1).ToLower() + "." + newUser.Nachname.ToLower() + "@mertens.ag",
+                Stellenbeschreibung = newUser.Stellenbeschreibung,
+                Eintrittsdatum = newUser.Eintrittsdatum,
+                INT_TODO = newUser.INT_TODO,
+                Notebook = newUser.Notebook,
+                Handy = newUser.Handy,
+                Tablet = newUser.Tablet,
+                Monitor = newUser.Monitor,
+                Drucker = newUser.Drucker,
+                Homeoffice = newUser.Homeoffice,
+                Bemerkung = newUser.Bemerkung,
+                Standort = newUser.Standort
+            };
+
+            await _db.NewUser(u);
+
+            user.Add(u);
+
+            newUser = new DisplayUserModel();
+            HideModal();
+        }
+    
 
 #line default
 #line hidden
